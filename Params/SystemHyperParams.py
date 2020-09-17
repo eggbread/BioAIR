@@ -1,19 +1,19 @@
-import configparser
-import os
+
+
 class SystemHyperParams(object):
-    def __init__(self, from_file=None, option=0):
-        '''
-        :param file: init or save file
-        :param option: 0 - init , 1 - load
-        '''
-        self.__waittime = 0.5
-        self.__maxmsglength = 4096
+    def __init__(self, config=None):
+        """
+        Init the SystemHyperParams
+        :param config: Parser.__config
+        """
+        self.__wait_time = 0.5
+        self.__max_msg_length = 4096
         self.__repulsor = 1
-        self.__targetproximity = 20
-        self.__targetforce = 1
+        self.__target_proximity = 20
+        self.__target_force = 1
         self.__unknown = -9999
-        self.__commstimeout = 15
-        self.__averagesample = 5
+        self.__comms_timeout = 15
+        self.__average_sample = 5
         self.__pi = 3.141592
 
         if option == 0:
@@ -21,10 +21,10 @@ class SystemHyperParams(object):
         elif option == 1:
             self.__load(f'../Params/load_file/{from_file}')
 
-    def save(self, save_file=None):
-        '''
-        save params
-        :param save_file: save할 file name
+    def save(self, config=None):
+        """
+        Save the SystemHyperParams
+        :param config: Parser.__config
         :return:
         '''
 
@@ -37,23 +37,10 @@ class SystemHyperParams(object):
                 print("Failed to create directory !")
                 raise
 
-        with open(f'../Params/load_file/{save_file}', mode="w", encoding="utf-8") as f:
-            shp = f"[SystemHyperParams]\n\
-WAITTIME = {self.__waittime}\n\
-MAXMSGLENGTH = {self.__maxmsglength}\n\
-REPULSOR = {self.__repulsor}\n\
-TARGETPROXIMITY = {self.__targetproximity}\n\
-TARGETFORCE = {self.__targetforce}\n\
-UNKNOWN = {self.__unknown}\n\
-COMMSTIMEOUT = {self.__commstimeout}\n\
-AVERAGESAMPLE = {self.__averagesample}\n\
-PI = {self.__pi}"
-            f.write(shp)
-
-    def __load(self, load_file=None):
-        '''
-        load params
-        :param save_file: load할 file name
+    def __init(self, config=None):
+        """
+        Load the SystemHyperParams
+        :param config: Parser.__config
         :return:
         '''
         config = configparser.ConfigParser()
@@ -118,20 +105,20 @@ PI = {self.__pi}"
             self.__pi = float(config['SystemHyperParams']['PI'])
 
     @property
-    def waittime(self):
-        return self.__waittime
+    def wait_time(self):
+        return self.__wait_time
 
-    @waittime.setter
-    def waittime(self, value):
-        self.__waittime = value
+    @wait_time.setter
+    def wait_time(self, value):
+        self.__wait_time = value
 
     @property
-    def maxmsglenghth(self):
-        return self.__maxmsglength
+    def max_msg_length(self):
+        return self.__max_msg_length
 
-    @maxmsglenghth.setter
-    def maxmsglenghth(self, value):
-        self.__maxmsglength = value
+    @max_msg_length.setter
+    def max_msg_length(self, value):
+        self.__max_msg_length = value
 
     @property
     def repulsor(self):
@@ -142,20 +129,20 @@ PI = {self.__pi}"
         self.__repulsor = value
 
     @property
-    def targetproximity(self):
-        return self.__targetproximity
+    def target_proximity(self):
+        return self.__target_proximity
 
-    @targetproximity.setter
-    def targetproximity(self, value):
-        self.__targetproximity = value
+    @target_proximity.setter
+    def target_proximity(self, value):
+        self.__target_proximity = value
 
     @property
-    def targetforce(self):
-        return self.__targetforce
+    def target_force(self):
+        return self.__target_force
 
-    @targetforce.setter
-    def targetforce(self, value):
-        self.__targetforce = value
+    @target_force.setter
+    def target_force(self, value):
+        self.__target_force = value
 
     @property
     def unknown(self):
@@ -166,20 +153,20 @@ PI = {self.__pi}"
         self.__unknown = value
 
     @property
-    def commstimeout(self):
-        return self.__commstimeout
+    def comms_timeout(self):
+        return self.__comms_timeout
 
-    @commstimeout.setter
-    def commstimeout(self, value):
-        self.__commstimeout = value
+    @comms_timeout.setter
+    def comms_timeout(self, value):
+        self.__comms_timeout = value
 
     @property
-    def averagesample(self):
-        return self.__averagesample
+    def average_sample(self):
+        return self.__average_sample
 
-    @averagesample.setter
-    def averagesample(self, value):
-        self.__averagesample = value
+    @average_sample.setter
+    def average_sample(self, value):
+        self.__average_sample = value
 
     @property
     def pi(self):

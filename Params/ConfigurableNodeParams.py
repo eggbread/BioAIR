@@ -1,12 +1,12 @@
-import configparser
-import os
-from Drone.State import NodeState,TentacleState
+from Drone.State import NodeState, TentacleState
+
+
 class ConfigurableNodeParams(object):
-    def __init__(self, from_file=None, option=0):
-        '''
-        :param file: init or save file
-        :param option: 0 - init , 1 - load
-        '''
+    def __init__(self, config=None):
+        """
+        Init the ConfigurableNodeParams
+        :param config: Parser.__config
+        """
         self.__ip = "127.0.0.1"
         self.__mac = "00:00:00:aa:00:02"
         self.__port = 10800
@@ -41,23 +41,19 @@ class ConfigurableNodeParams(object):
 
         self.__has_sensor = False
 
-        self.__virtual_target = -1  #  -1 : off / 0 : on / node_id : virtual_origin
+        self.__virtual_target = -1  # -1 : off / 0 : on / node_id : virtual_origin
         self.__virtual_target_position_x = 0
         self.__virtual_target_position_y = 0
         self.__virtual_target_position_z = 0
 
-        if option == 0:
-            
-            self.__init(f'{os.path.dirname(__file__)}/init_file/{from_file}')
-        elif option == 1:
-            self.__load(f'{os.path.dirname(__file__)}/load_file/{from_file}')
+        self.__init(config)
 
-    def save(self, save_file=None):
-        '''
-        save params
-        :param save_file: save할 file name
+    def save(self, config=None):
+        """
+        Save the ConfigurableNodeParams
+        :param config: Parser.__config
         :return:
-        '''
+        """
 
         try:
             save_directory = f'../Params/load_file'
@@ -68,47 +64,10 @@ class ConfigurableNodeParams(object):
                 print("Failed to create directory !")
                 raise
 
-        with open(f'../Params/load_file/{save_file}', mode="w", encoding="utf-8") as f:
-            cnp = f"[ConfigurableNodeParams]\n\
-IP = {self.__ip}\n\
-MAC = {self.__mac}\n\
-PORT = {self.__port}\n\
-NODE_ID = {self.__node_id}\n\
-TENTACLE_ID = {self.__tentacle_id}\n\
-NODE_STATE = {self.__node_state_to_str(self.__node_state)}\n\
-TENTACLE_STATE = {self.__tentacle_state_to_str(self.__tentacle_state)}\n\
-POSITION_X = {self.__position_x}\n\
-POSITION_Y = {self.__position_y}\n\
-POSITION_Z = {self.__position_z}\n\
-ORIGIN_ID = {self.__origin_id}\n\
-ORIGIN_POSITION_X = {self.__origin_position_x}\n\
-ORIGIN_POSITION_Y = {self.__origin_position_y}\n\
-ORIGIN_POSITION_Z = {self.__origin_position_z}\n\
-DEST_ID = {self.__dest_id}\n\
-DEST_POSITION_X = {self.__dest_position_x}\n\
-DEST_POSITION_Y = {self.__dest_position_y}\n\
-DEST_POSITION_Z = {self.__dest_position_z}\n\
-PREV_VEL_X = {self.__prev_vel_x}\n\
-PREV_VEL_Y = {self.__prev_vel_y}\n\
-PREV_VEL_Z = {self.__prev_vel_z}\n\
-NEXT_VEL_X = {self.__next_vel_x}\n\
-NEXT_VEL_Y = {self.__next_vel_y}\n\
-NEXT_VEL_Z = {self.__next_vel_z}\n\
-HIGH_SQ = {self.__high_sq}\n\
-LOW_SQ = {self.__low_sq}\n\
-EQUILIBRIUM_ZONE = {self.__equilibrium_zone}\n\
-RADIO_RANGE = {self.__radio_range}\n\
-HAS_SENSOR = {str(self.__has_sensor).upper()}\n\
-VIRTUAL_TARGET = {self.__virtual_target}\n\
-VIRTUAL_TARGET_POSITION_X = {self.__virtual_target_position_x}\n\
-VIRTUAL_TARGET_POSITION_Y = {self.__virtual_target_position_y}\n\
-VIRTUAL_TARGET_POSITION_Z = {self.__virtual_target_position_z}\n"
-            f.write(cnp)
-
-    def __load(self, load_file=None):
-        '''
-        load params
-        :param save_file: load할 file name
+    def __init(self, config=None):
+        """
+        Load the ConfigurableNodeParams
+        :param config: Parser.__config
         :return:
         '''
         config = configparser.ConfigParser()
@@ -310,71 +269,6 @@ VIRTUAL_TARGET_POSITION_Z = {self.__virtual_target_position_z}\n"
             else:
                 self.__has_sensor = False
 
-    def __str_to_node_state(self,str):
-        if (str == "FREE"):
-            return NodeState.Free
-        if (str == "TIP"):
-            return NodeState.Tip
-        if (str == "BACKBONE"):
-            return NodeState.Backbone
-        if (str == "EXTRA"):
-            return NodeState.Extra
-        if (str == "REINFORCE"):
-            return NodeState.Reinforce
-        if (str == "ORPHAN"):
-            return NodeState.Orphan
-        if (str == "ORIGIN"):
-            return NodeState.Origin
-        if (str == "DEST"):
-            return NodeState.Destination
-        if (str == "TARGET"):
-            return NodeState.Target
-
-    def __node_state_to_str(self,node_state):
-
-        if node_state is NodeState.Free:
-            return "FREE"
-        if node_state is NodeState.Tip:
-            return "TIP"
-        if node_state is NodeState.Backbone:
-            return "BACKBONE"
-        if node_state is NodeState.Extra:
-            return "EXTRA"
-        if node_state is NodeState.Reinforce:
-            return "REINFORCE"
-        if node_state is NodeState.Orphan:
-            return "ORPHAN"
-        if node_state is NodeState.Origin:
-            return "ORIGIN"
-        if node_state is NodeState.Destination:
-            return "DEST"
-
-    def __str_to_tentacle_state(self,str):
-        if (str == "FORMING"):
-            return TentacleState.Forming
-        if (str == "COMPLETE"):
-            return TentacleState.Complete
-        if (str == "DAMAGED"):
-            return TentacleState.Damaged
-        if (str == "REINFORCING"):
-            return TentacleState.Reinforcing
-        if (str == "NEXT_DEST"):
-            return TentacleState.Next_Destination
-
-    def __tentacle_state_to_str(self,tentacle_state):
-        if tentacle_state is TentacleState.Forming:
-            return "FORMING"
-        if tentacle_state is TentacleState.Complete:
-            return "COMPLETE"
-        if tentacle_state is TentacleState.Damaged:
-            return "DAMAGED"
-        if tentacle_state is TentacleState.Reinforcing:
-            return "REINFORCING"
-        if tentacle_state is TentacleState.Next_Destination:
-            return "NEXT_DEST"
-        if tentacle_state is None:
-            return "None"
-
     @property
     def ip(self):
         return self.__ip
@@ -382,43 +276,43 @@ VIRTUAL_TARGET_POSITION_Z = {self.__virtual_target_position_z}\n"
     @ip.setter
     def ip(self, value):
         self.__ip = value
-        
+
     @property
     def mac(self):
         return self.__mac
-    
+
     @mac.setter
     def mac(self, value):
         self.__mac = value
-    
+
     @property
     def port(self):
-        return self.__port 
-    
+        return self.__port
+
     @port.setter
     def port(self, value):
         self.__port = value
-    
+
     @property
     def node_id(self):
         return self.__node_id
-    
+
     @node_id.setter
     def node_id(self, value):
         self.__node_id = value
-        
+
     @property
     def tentacle_id(self):
         return self.__tentacle_id
-    
+
     @tentacle_id.setter
     def tentacle_id(self, value):
         self.__tentacle_id = value
-        
+
     @property
     def node_state(self):
-        return self.__node_state 
-    
+        return self.__node_state
+
     @node_state.setter
     def node_state(self, value):
         self.__node_state = value
@@ -430,11 +324,11 @@ VIRTUAL_TARGET_POSITION_Z = {self.__virtual_target_position_z}\n"
     @tentacle_state.setter
     def tentacle_state(self, value):
         self.__tentacle_state = value
-    
+
     @property
     def position_x(self):
         return self.__position_x
-    
+
     @position_x.setter
     def position_x(self, value):
         self.__position_x = value
@@ -446,11 +340,11 @@ VIRTUAL_TARGET_POSITION_Z = {self.__virtual_target_position_z}\n"
     @position_y.setter
     def position_y(self, value):
         self.__position_y = value
-    
+
     @property
     def position_z(self):
         return self.__position_z
-    
+
     @position_z.setter
     def position_z(self, value):
         self.__position_z = value
@@ -490,15 +384,15 @@ VIRTUAL_TARGET_POSITION_Z = {self.__virtual_target_position_z}\n"
     @property
     def dest_id(self):
         return self.__dest_id
-    
+
     @dest_id.setter
     def dest_id(self, value):
         self.__dest_id = value
-    
+
     @property
     def dest_position_x(self):
         return self.__dest_position_x
-    
+
     @dest_position_x.setter
     def dest_position_x(self, value):
         self.__dest_position_x = value
@@ -518,63 +412,63 @@ VIRTUAL_TARGET_POSITION_Z = {self.__virtual_target_position_z}\n"
     @dest_position_z.setter
     def dest_position_z(self, value):
         self.__dest_position_z = value
-        
+
     @property
     def prev_vel_x(self):
         return self.__prev_vel_x
-    
+
     @prev_vel_x.setter
     def prev_vel_x(self, value):
         self.__prev_vel_x = value
-        
+
     @property
     def prev_vel_y(self):
         return self.__prev_vel_y
-    
+
     @prev_vel_y.setter
     def prev_vel_y(self, value):
         self.__prev_vel_y = value
-        
+
     @property
     def prev_vel_z(self):
         return self.__prev_vel_z
-    
+
     @prev_vel_z.setter
     def prev_vel_z(self, value):
         self.__prev_vel_z = value
-    
+
     @property
     def next_vel_x(self):
         return self.__next_vel_x
-    
+
     @next_vel_x.setter
     def next_vel_x(self, value):
         self.__next_vel_x = value
-    
+
     @property
     def next_vel_y(self):
         return self.__next_vel_y
-    
+
     @next_vel_y.setter
     def next_vel_y(self, value):
         self.__next_vel_y = value
-    
+
     @property
     def next_vel_z(self):
         return self.__next_vel_z
-    
+
     @next_vel_z.setter
     def next_vel_z(self, value):
         self.__next_vel_z = value
-        
+
     @property
     def high_sq(self):
         return self.__high_sq
-    
+
     @high_sq.setter
     def high_sq(self, value):
         self.__high_sq = value
-    
+
     @property
     def low_sq(self):
         return self.__low_sq

@@ -1,39 +1,39 @@
 import threading
-import pickle
 import os
 from Params.SystemHyperParams import SystemHyperParams
 from Params.ConfigurableNodeParams import ConfigurableNodeParams
 from Params.SituationDecisionParams import SituationDecisionParams
 from Modules.Communicator import Communicator
 from Modules.Motion import Motion
+from Params.Parser import Parser
 
 
 class Node(object):
-    def __init__(self, run_mode=None, node_id=None, load_option=0, write_option=0):
-        # 주위 노드들의 정보를 담는다.
+    def __init__(self, run_mode=None, node_id=None, load_option=False, write_option=False):
+        """
+        Load the init files and Make a thread
+        :param run_mode: "REAL" mode or "CORE" mode
+        :param node_id: The number of node
+        :param load_option: True loads the init file from load_file dir, False loads from init_file dir
+        :param write_option: True writes the init file in load_file dir, False doesn't write
+        """
         self.__node_status = {}
-        # ?
         self.__node_signal = {}
         self.__write = write_option
 
-        # node_n_CNP config 가져오기
-        self.__configurable_node_params = ConfigurableNodeParams("node_" + node_id + "_CNP.ini", load_option)
-        # node_n_SHP config 가져오기
-        self.__system_hyper_params = SystemHyperParams("node_" + node_id + "_SHP.ini", load_option)
-        # node_n_SDP config 가져오기
-        self.__situation_decision_params = SituationDecisionParams("node_" + node_id + "_SDP.ini", load_option)
+        self.__parser = Parser(node_id, load_option)
+        self.__configurable_node_params = self.__parser.configurable_node_params
+        self.__situation_decision_params = self.__parser.situation_decision_params
+        self.__system_hyper_params = self.__parser.system_hyper_params
 
-        # 가져온 config를 기준으로 Communicator 클래스 생성
         self.__communicator = Communicator(self.__system_hyper_params,
                                            self.__situation_decision_params,
                                            self.__configurable_node_params,
                                            self.__node_status,
                                            self.__node_signal)
 
-        # Generate the Motion Class
         self.__motion = Motion()
 
-        #  Start the Communicator Thread
         self.__comm_thread = threading.Thread(target=self.__communicator.communication, daemon=True,
                                               args=[self.__system_hyper_params,
                                                     self.__situation_decision_params,
@@ -59,9 +59,7 @@ class Node(object):
         finally:
             if self.__write:
                 node_id = self.__configurable_node_params.node_id
-                self.__system_hyper_params.save(f"node_{node_id}_SHP.ini")
-                self.__configurable_node_params.save(f"node_{node_id}_CNP.ini")
-                self.__situation_decision_params.save(f"node_{node_id}_SDP.ini")
+                self.__parser.save()
                 cmd = f"coresendmsg -a 127.0.0.1 NODE NUMBER={node_id} X_POSITION=9999 Y_POSITION=9999"
                 os.popen(cmd)
 
