@@ -55,215 +55,135 @@ class ConfigurableNodeParams(object):
         :return:
         """
 
-        try:
-            save_directory = f'../Params/load_file'
-            if not (os.path.isdir(save_directory)):
-                os.makedirs(os.path.join(save_directory))
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                print("Failed to create directory !")
-                raise
+        config['ConfigurableNodeParams'] = {
+            'ip': self.__ip,
+            'mac': self.__mac,
+            'port': self.__port,
+            'node_id': self.__node_id,
+            'tentacle_id': self.__tentacle_id,
+            'node_state': NodeState.node_state_to_str(self.__node_state),
+            'tentacle_state': TentacleState.tentacle_state_to_str(self.__tentacle_state),
+            'position_x': self.__position_x,
+            'position_y': self.__position_y,
+            'position_z': self.__position_z,
+            'origin_id': self.__origin_id,
+            'origin_position_x': self.__origin_position_x,
+            'origin_position_y': self.__origin_position_y,
+            'origin_position_z': self.__origin_position_z,
+            'dest_id': self.__dest_id,
+            'dest_position_x': self.__dest_position_x,
+            'dest_position_y': self.__dest_position_y,
+            'dest_position_z': self.__dest_position_z,
+            'prev_vel_x': self.__prev_vel_x,
+            'prev_vel_y': self.__prev_vel_y,
+            'prev_vel_z': self.__prev_vel_z,
+            'next_vel_x': self.__next_vel_x,
+            'next_vel_y': self.__next_vel_y,
+            'next_vel_z': self.__next_vel_z,
+            'high_sq': self.__high_sq,
+            'low_sq': self.__low_sq,
+            'equilibrium_zone': self.__equilibrium_zone,
+            'radio_range': self.__radio_range,
+            'has_sensor': str(self.__has_sensor).upper(),
+            'virtual_target': self.__virtual_target,
+            'virtual_target_position_x': self.__virtual_target_position_x,
+            'virtual_target_position_y': self.__virtual_target_position_y,
+            'virtual_target_position_z': self.__virtual_target_position_z,
+        }
 
     def __init(self, config=None):
         """
         Load the ConfigurableNodeParams
         :param config: Parser.__config
         :return:
-        '''
-        config = configparser.ConfigParser()
-        config.read(load_file)
-        if 'IP' in config['ConfigurableNodeParams']:
-            self.__ip = config['ConfigurableNodeParams']['IP']
+        """
+        if 'ip' in config['ConfigurableNodeParams']:
+            self.__ip = config['ConfigurableNodeParams']['ip']
 
-        if 'MAC' in config['ConfigurableNodeParams']:
-            self.__mac = config['ConfigurableNodeParams']['MAC']
+        if 'mac' in config['ConfigurableNodeParams']:
+            self.__mac = config['ConfigurableNodeParams']['mac']
 
-        if 'PORT' in config['ConfigurableNodeParams']:
-            self.__port = int(config['ConfigurableNodeParams']['PORT'])
+        if 'port' in config['ConfigurableNodeParams']:
+            self.__port = int(config['ConfigurableNodeParams']['port'])
 
-        if 'NODE_ID' in config['ConfigurableNodeParams']:
-            self.__node_id = int(config['ConfigurableNodeParams']['NODE_ID'])
+        if 'node_id' in config['ConfigurableNodeParams']:
+            self.__node_id = int(config['ConfigurableNodeParams']['node_id'])
 
-        if 'TENTACLE_ID' in config['ConfigurableNodeParams']:
-            self.__tentacle_id = int(config['ConfigurableNodeParams']['TENTACLE_ID'])
+        if 'tentacle_id' in config['ConfigurableNodeParams']:
+            self.__tentacle_id = int(config['ConfigurableNodeParams']['tentacle_id'])
 
-        if 'NODE_STATE' in config['ConfigurableNodeParams']:
-            self.__node_state = self.__str_to_node_state(config['ConfigurableNodeParams']['NODE_STATE'])
+        if 'node_state' in config['ConfigurableNodeParams']:
+            self.__node_state = NodeState.str_to_node_state(config['ConfigurableNodeParams']['node_state'])
 
-        if 'TENTACLE_STATE' in config['ConfigurableNodeParams']:
-            self.__tentacle_state = self.__str_to_tentacle_state(config['ConfigurableNodeParams']['TENTACLE_STATE'])
+        if 'tentacle_state' in config['ConfigurableNodeParams']:
+            self.__tentacle_state = \
+                TentacleState.str_to_tentacle_state(config['ConfigurableNodeParams']['tentacle_state'])
 
-        if 'POSITION_X' in config['ConfigurableNodeParams']:
-            self.__position_x = float(config['ConfigurableNodeParams']['POSITION_X'])
+        if 'position_x' in config['ConfigurableNodeParams']:
+            self.__position_x = float(config['ConfigurableNodeParams']['position_x'])
 
-        if 'POSITION_Y' in config['ConfigurableNodeParams']:
-            self.__position_y = float(config['ConfigurableNodeParams']['POSITION_Y'])
+        if 'position_y' in config['ConfigurableNodeParams']:
+            self.__position_y = float(config['ConfigurableNodeParams']['position_y'])
 
-        if 'POSITION_Z' in config['ConfigurableNodeParams']:
-            self.__position_z = float(config['ConfigurableNodeParams']['POSITION_Z'])
+        if 'position_z' in config['ConfigurableNodeParams']:
+            self.__position_z = float(config['ConfigurableNodeParams']['position_z'])
 
-        if 'ORIGIN_ID' in config['ConfigurableNodeParams']:
-            self.__origin_id = int(config['ConfigurableNodeParams']['ORIGIN_ID'])
+        if 'origin_id' in config['ConfigurableNodeParams']:
+            self.__origin_id = int(config['ConfigurableNodeParams']['origin_id'])
 
-        if 'DEST_POSITION_X' in config['ConfigurableNodeParams']:
-            self.__origin_position_x = int(config['ConfigurableNodeParams']['ORIGIN_POSITION_X'])
+        if 'origin_position_x' in config['ConfigurableNodeParams']:
+            self.__origin_position_x = float(config['ConfigurableNodeParams']['origin_position_x'])
 
-        if 'DEST_POSITION_Y' in config['ConfigurableNodeParams']:
-            self.__origin_position_y = int(config['ConfigurableNodeParams']['ORIGIN_POSITION_Y'])
+        if 'origin_position_y' in config['ConfigurableNodeParams']:
+            self.__origin_position_y = float(config['ConfigurableNodeParams']['origin_position_y'])
 
-        if 'DEST_POSITION_Z' in config['ConfigurableNodeParams']:
-            self.__origin_position_z = int(config['ConfigurableNodeParams']['ORIGIN_POSITION_Z'])
+        if 'origin_position_z' in config['ConfigurableNodeParams']:
+            self.__origin_position_z = float(config['ConfigurableNodeParams']['origin_position_z'])
 
-        if 'DEST_ID' in config['ConfigurableNodeParams']:
-            self.__dest_id = int(config['ConfigurableNodeParams']['DEST_ID'])
+        if 'dest_id' in config['ConfigurableNodeParams']:
+            self.__dest_id = int(config['ConfigurableNodeParams']['dest_id'])
 
-        if 'DEST_POSITION_X' in config['ConfigurableNodeParams']:
-            self.__dest_position_x = int(config['ConfigurableNodeParams']['DEST_POSITION_X'])
+        if 'dest_position_x' in config['ConfigurableNodeParams']:
+            self.__dest_position_x = int(config['ConfigurableNodeParams']['dest_position_x'])
 
-        if 'DEST_POSITION_Y' in config['ConfigurableNodeParams']:
-            self.__dest_position_y = int(config['ConfigurableNodeParams']['DEST_POSITION_Y'])
+        if 'dest_position_y' in config['ConfigurableNodeParams']:
+            self.__dest_position_y = int(config['ConfigurableNodeParams']['dest_position_y'])
 
-        if 'DEST_POSITION_Z' in config['ConfigurableNodeParams']:
-            self.__dest_position_z = int(config['ConfigurableNodeParams']['DEST_POSITION_Z'])
+        if 'dest_position_z' in config['ConfigurableNodeParams']:
+            self.__dest_position_z = int(config['ConfigurableNodeParams']['dest_position_z'])
 
-        if 'PREV_VEL_X' in config['ConfigurableNodeParams']:
-            self.__prev_vel_x = float(config['ConfigurableNodeParams']['PREV_VEL_X'])
+        if 'prev_vel_x' in config['ConfigurableNodeParams']:
+            self.__prev_vel_x = float(config['ConfigurableNodeParams']['prev_vel_x'])
 
-        if 'PREV_VEL_Y' in config['ConfigurableNodeParams']:
-            self.__prev_vel_y = float(config['ConfigurableNodeParams']['PREV_VEL_Y'])
+        if 'prev_vel_y' in config['ConfigurableNodeParams']:
+            self.__prev_vel_y = float(config['ConfigurableNodeParams']['prev_vel_y'])
 
-        if 'PREV_VEL_Z' in config['ConfigurableNodeParams']:
-            self.__prev_vel_z = float(config['ConfigurableNodeParams']['PREV_VEL_Z'])
+        if 'prev_vel_z' in config['ConfigurableNodeParams']:
+            self.__prev_vel_z = float(config['ConfigurableNodeParams']['prev_vel_z'])
 
-        if 'NEXT_VEL_X' in config['ConfigurableNodeParams']:
-            self.__next_vel_x = float(config['ConfigurableNodeParams']['NEXT_VEL_X'])
+        if 'next_vel_x' in config['ConfigurableNodeParams']:
+            self.__next_vel_x = float(config['ConfigurableNodeParams']['next_vel_x'])
 
-        if 'NEXT_VEL_Y' in config['ConfigurableNodeParams']:
-            self.__next_vel_y = float(config['ConfigurableNodeParams']['NEXT_VEL_Y'])
+        if 'next_vel_y' in config['ConfigurableNodeParams']:
+            self.__next_vel_y = float(config['ConfigurableNodeParams']['next_vel_y'])
 
-        if 'NEXT_VEL_Z' in config['ConfigurableNodeParams']:
-            self.__next_vel_z = float(config['ConfigurableNodeParams']['NEXT_VEL_Z'])
+        if 'next_vel_z' in config['ConfigurableNodeParams']:
+            self.__next_vel_z = float(config['ConfigurableNodeParams']['next_vel_z'])
 
-        if 'HIGH_SQ' in config['ConfigurableNodeParams']:
-            self.__high_sq = float(config['ConfigurableNodeParams']['HIGH_SQ'])
+        if 'high_sq' in config['ConfigurableNodeParams']:
+            self.__high_sq = float(config['ConfigurableNodeParams']['high_sq'])
 
-        if 'LOW_SQ' in config['ConfigurableNodeParams']:
-            self.__low_sq = float(config['ConfigurableNodeParams']['LOW_SQ'])
+        if 'low_sq' in config['ConfigurableNodeParams']:
+            self.__low_sq = float(config['ConfigurableNodeParams']['low_sq'])
 
-        if 'EQUILIBRIUM_ZONE' in config['ConfigurableNodeParams']:
-            self.__equilibrium_zone = float(config['ConfigurableNodeParams']['EQUILIBRIUM_ZONE'])
+        if 'equilibrium_zone' in config['ConfigurableNodeParams']:
+            self.__equilibrium_zone = float(config['ConfigurableNodeParams']['equilibrium_zone'])
 
-        if 'RADIO_RANGE' in config['ConfigurableNodeParams']:
-            self.__radio_range= int(config['ConfigurableNodeParams']['RADIO_RANGE'])
+        if 'radio_range' in config['ConfigurableNodeParams']:
+            self.__radio_range = int(config['ConfigurableNodeParams']['radio_range'])
 
-        if 'HAS_SENSOR' in config['ConfigurableNodeParams']:
-            has_sensor = config['ConfigurableNodeParams']['HAS_SENSOR']
-            if has_sensor == "TRUE":
-                self.__has_sensor = True
-            else:
-                self.__has_sensor = False
-
-        if 'VIRTUAL_TARGET' in config['ConfigurableNodeParams']:
-            self.__virtual_target = int(config['ConfigurableNodeParams']['VIRTUAL_TARGET'])
-
-        if 'VIRTUAL_TARGET_POSITION_X' in config['ConfigurableNodeParams']:
-            self.__virtual_target_position_x = int(config['ConfigurableNodeParams']['VIRTUAL_TARGET_POSITION_X'])
-
-        if 'VIRTUAL_TARGET_POSITION_Y' in config['ConfigurableNodeParams']:
-            self.__virtual_target_position_y = int(config['ConfigurableNodeParams']['VIRTUAL_TARGET_POSITION_Y'])
-
-        if 'VIRTUAL_TARGET_POSITION_Z' in config['ConfigurableNodeParams']:
-            self.__virtual_target_position_z = int(config['ConfigurableNodeParams']['VIRTUAL_TARGET_POSITION_Z'])
-
-    def __init(self, init_file=None):
-        config = configparser.ConfigParser()
-        config.read(init_file)
-        if 'IP' in config['ConfigurableNodeParams']:
-            self.__ip = config['ConfigurableNodeParams']['IP']
-
-        if 'MAC' in config['ConfigurableNodeParams']:
-            self.__mac = config['ConfigurableNodeParams']['MAC']
-
-        if 'PORT' in config['ConfigurableNodeParams']:
-            self.__port = int(config['ConfigurableNodeParams']['PORT'])
-
-        if 'NODE_ID' in config['ConfigurableNodeParams']:
-            self.__node_id = int(config['ConfigurableNodeParams']['NODE_ID'])
-
-        if 'TENTACLE_ID' in config['ConfigurableNodeParams']:
-            self.__tentacle_id = int(config['ConfigurableNodeParams']['TENTACLE_ID'])
-
-        if 'NODE_STATE' in config['ConfigurableNodeParams']:
-            self.__node_state = self.__str_to_node_state(config['ConfigurableNodeParams']['NODE_STATE'])
-
-        if 'TENTACLE_STATE' in config['ConfigurableNodeParams']:
-            self.__tentacle_state = self.__str_to_tentacle_state(config['ConfigurableNodeParams']['TENTACLE_STATE'])
-
-        if 'POSITION_X' in config['ConfigurableNodeParams']:
-            self.__position_x = int(config['ConfigurableNodeParams']['POSITION_X'])
-
-        if 'POSITION_Y' in config['ConfigurableNodeParams']:
-            self.__position_y = int(config['ConfigurableNodeParams']['POSITION_Y'])
-
-        if 'POSITION_Z' in config['ConfigurableNodeParams']:
-            self.__position_z = int(config['ConfigurableNodeParams']['POSITION_Z'])
-
-        if 'ORIGIN_ID' in config['ConfigurableNodeParams']:
-            self.__origin_id = int(config['ConfigurableNodeParams']['ORIGIN_ID'])
-
-        if 'DEST_POSITION_X' in config['ConfigurableNodeParams']:
-            self.__origin_position_x = int(config['ConfigurableNodeParams']['ORIGIN_POSITION_X'])
-
-        if 'DEST_POSITION_Y' in config['ConfigurableNodeParams']:
-            self.__origin_position_y = int(config['ConfigurableNodeParams']['ORIGIN_POSITION_Y'])
-
-        if 'DEST_POSITION_Z' in config['ConfigurableNodeParams']:
-            self.__origin_position_z = int(config['ConfigurableNodeParams']['ORIGIN_POSITION_Z'])
-
-        if 'DEST_ID' in config['ConfigurableNodeParams']:
-            self.__dest_id = int(config['ConfigurableNodeParams']['DEST_ID'])
-
-        if 'DEST_POSITION_X' in config['ConfigurableNodeParams']:
-            self.__dest_position_x = int(config['ConfigurableNodeParams']['DEST_POSITION_X'])
-
-        if 'DEST_POSITION_Y' in config['ConfigurableNodeParams']:
-            self.__dest_position_y = int(config['ConfigurableNodeParams']['DEST_POSITION_Y'])
-
-        if 'DEST_POSITION_Z' in config['ConfigurableNodeParams']:
-            self.__dest_position_z = int(config['ConfigurableNodeParams']['DEST_POSITION_Z'])
-
-        if 'PREV_VEL_X' in config['ConfigurableNodeParams']:
-            self.__prev_vel_x = float(config['ConfigurableNodeParams']['PREV_VEL_X'])
-
-        if 'PREV_VEL_Y' in config['ConfigurableNodeParams']:
-            self.__prev_vel_y = float(config['ConfigurableNodeParams']['PREV_VEL_Y'])
-
-        if 'PREV_VEL_Z' in config['ConfigurableNodeParams']:
-            self.__prev_vel_z = float(config['ConfigurableNodeParams']['PREV_VEL_Z'])
-
-        if 'NEXT_VEL_X' in config['ConfigurableNodeParams']:
-            self.__next_vel_x = float(config['ConfigurableNodeParams']['NEXT_VEL_X'])
-
-        if 'NEXT_VEL_Y' in config['ConfigurableNodeParams']:
-            self.__next_vel_y = float(config['ConfigurableNodeParams']['NEXT_VEL_Y'])
-
-        if 'NEXT_VEL_Z' in config['ConfigurableNodeParams']:
-            self.__next_vel_z = float(config['ConfigurableNodeParams']['NEXT_VEL_Z'])
-
-        if 'HIGH_SQ' in config['ConfigurableNodeParams']:
-            self.__high_sq = float(config['ConfigurableNodeParams']['HIGH_SQ'])
-
-        if 'LOW_SQ' in config['ConfigurableNodeParams']:
-            self.__low_sq = float(config['ConfigurableNodeParams']['LOW_SQ'])
-
-        if 'EQUILIBRIUM_ZONE' in config['ConfigurableNodeParams']:
-            self.__equilibrium_zone = float(config['ConfigurableNodeParams']['EQUILIBRIUM_ZONE'])
-
-        if 'RADIO_RANGE' in config['ConfigurableNodeParams']:
-            self.__radio_range= int(config['ConfigurableNodeParams']['RADIO_RANGE'])
-
-        if 'HAS_SENSOR' in config['ConfigurableNodeParams']:
-            has_sensor = config['ConfigurableNodeParams']['HAS_SENSOR']
+        if 'has_sensor' in config['ConfigurableNodeParams']:
+            has_sensor = config['ConfigurableNodeParams']['has_sensor']
             if has_sensor == "TRUE":
                 self.__has_sensor = True
             else:

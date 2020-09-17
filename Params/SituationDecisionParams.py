@@ -63,140 +63,97 @@ class SituationDecisionParams(object):
         :param config: Parser.__config
         """
 
-        try:
-            save_directory = f'../Params/load_file'
-            if not (os.path.isdir(save_directory)):
-                os.makedirs(os.path.join(save_directory))
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                print("Failed to create directory !")
-                raise
+        config['SituationDecisionParams'] = {
+            'tentacle_within_pos': self.__tentacle_within_pos,
+            'hold': str(self.__hold).upper(),
+            'incomplete_orphan': self.__incomplete_orphan,
+            'incomplete_reinforce': self.__incomplete_reinforce,
+            'incomplete_repair': self.__incomplete_repair,
+            'incomplete_tentacle': self.__incomplete_tentacle,
+            'origin_connection': str(self.__origin_connection).upper(),
+            'dest_connection': str(self.__dest_connection).upper(),
+            'is_anchored': self.__is_anchored,
+            'is_reinforced': self.__is_reinforced,
+            'anchoring': self.__anchoring,
+            'reinforcing': self.__reinforcing,
+            'EXTRA_ON_TENTACLE': str(self.__extra_on_tentacle),
+            'REINFORCE_ON_TENTACLE': str(self.__reinforce_on_tentacle),
+            'ADJ_NODES': str(self.__adj_nodes),
+            'equilibrium': self.__equilibrium,
+            'REAL_TARGET_DETECTION': str(self.__real_target_detection).upper(),
+            'REAL_TARGET_POSITION_X': self.__real_target_position_x,
+            'REAL_TARGET_POSITION_Y': self.__real_target_position_y,
+            'REAL_TARGET_POSITION_Z': self.__real_target_position_z,
+            'ADJ_ORIGIN': self.__adj_origin,
+            'ADJ_DEST': self.__adj_dest,
+            'ADJ_TIP': self.__adj_tip,
+            'ADJ_BACKBONE': self.__adj_backbone,
+            'ADJ_FREE': self.__adj_free,
+            'ADJ_VIRTUAL_ORIGIN': self.__adj_virtual_origin,
+            'VIRTUAL_ORIGIN_TRIGGER': str(self.__virtual_origin_trigger).upper(),
+            'NEXT_ATTRACTOR': self.__next_attractor,
+            'GLOBAL_COUNT': self.__global_count,
+            'IS_NEW_TIP': str(self.__is_new_tip).upper(),
+            'LATEST_TENTACLE_STATE': TentacleState.tentacle_state_to_str(self.__latest_tentacle_state),
+            'hold_TIMER': self.__hold_timer,
+        }
 
     def __init(self, config=None):
         """
         Load the SituationDecisionParams
         :param config: Parser.__config
         :return:
-        '''
-        config = configparser.ConfigParser()
-        config.read(load_file)
-        if 'TENTACLE_WITHIN_POS' in config['SituationDecisionParams']:
-            self.__tentacle_within_pos = int(config['SituationDecisionParams']['TENTACLE_WITHIN_POS'])
+        """
+        if 'tentacle_within_pos' in config['SituationDecisionParams']:
+            self.__tentacle_within_pos = int(config['SituationDecisionParams']['tentacle_within_pos'])
 
-        if 'HOLD' in config['SituationDecisionParams']:
-            hold = config['SituationDecisionParams']['HOLD']
+        if 'hold' in config['SituationDecisionParams']:
+            hold = config['SituationDecisionParams']['hold']
             if hold == "TRUE":
                 self.__hold = True
             else:
                 self.__hold = False
 
-        if 'INCOMPLETE_ORPHAN' in config['SituationDecisionParams']:
-            self.__incomplete_orphan = int(config['SituationDecisionParams']['INCOMPLETE_ORPHAN'])
+        if 'incomplete_orphan' in config['SituationDecisionParams']:
+            self.__incomplete_orphan = int(config['SituationDecisionParams']['incomplete_orphan'])
 
-        if 'INCOMPLETE_REINFORCE' in config['SituationDecisionParams']:
-            self.__incomplete_reinforce = int(config['SituationDecisionParams']['INCOMPLETE_REINFORCE'])
+        if 'incomplete_reinforce' in config['SituationDecisionParams']:
+            self.__incomplete_reinforce = int(config['SituationDecisionParams']['incomplete_reinforce'])
 
-        if 'INCOMPLETE_REPAIR' in config['SituationDecisionParams']:
-            self.__incomplete_repair = int(config['SituationDecisionParams']['INCOMPLETE_REPAIR'])
+        if 'incomplete_repair' in config['SituationDecisionParams']:
+            self.__incomplete_repair = int(config['SituationDecisionParams']['incomplete_repair'])
 
-        if 'INCOMPLETE_TENTACLE' in config['SituationDecisionParams']:
-            self.__incomplete_repair = int(config['SituationDecisionParams']['INCOMPLETE_TENTACLE'])
+        if 'incomplete_tentacle' in config['SituationDecisionParams']:
+            self.__incomplete_repair = int(config['SituationDecisionParams']['incomplete_tentacle'])
 
-        if 'COMPLETE_REINFORCE' in config['SituationDecisionParams']:
-            self.__complete_reinforce = int(config['SituationDecisionParams']['COMPLETE_REINFORCE'])
-
-        if 'ORIGIN_CONNECTION' in config['SituationDecisionParams']:
-            origin_connection = config['SituationDecisionParams']['ORIGIN_CONNECTION']
+        if 'origin_connection' in config['SituationDecisionParams']:
+            origin_connection = config['SituationDecisionParams']['origin_connection']
             if origin_connection == 'TRUE':
                 self.__origin_connection = True
             else:
                 self.__origin_connection = False
 
-        if 'DEST_CONNECTION' in config['SituationDecisionParams']:
-            dest_conncection = config['SituationDecisionParams']['DEST_CONNECTION']
-            if dest_conncection == "TRUE":
+        if 'dest_connection' in config['SituationDecisionParams']:
+            dest_connection = config['SituationDecisionParams']['dest_connection']
+            if dest_connection == "TRUE":
                 self.__dest_connection = True
             else:
                 self.__dest_connection = False
 
-        if 'IS_ANCHORED' in config['SituationDecisionParams']:
-            is_anchored = int(config['SituationDecisionParams']['IS_ANCHORED'])
+        if 'is_anchored' in config['SituationDecisionParams']:
+            self.__is_anchored = int(config['SituationDecisionParams']['is_anchored'])
 
-        if 'IS_REINFORCED' in config['SituationDecisionParams']:
-            is_reinforced = int(config['SituationDecisionParams']['IS_REINFORCED'])
+        if 'is_reinforced' in config['SituationDecisionParams']:
+            self.__is_reinforced = int(config['SituationDecisionParams']['is_reinforced'])
 
-        if 'ANCHORING' in config['SituationDecisionParams']:
-            self.__anchoring = int(config['SituationDecisionParams']['ANCHORING'])
+        if 'anchoring' in config['SituationDecisionParams']:
+            self.__anchoring = int(config['SituationDecisionParams']['anchoring'])
 
-        if 'REINFORCING' in config['SituationDecisionParams']:
-            self.__reinforcing = int(config['SituationDecisionParams']['REINFORCING'])
+        if 'reinforcing' in config['SituationDecisionParams']:
+            self.__reinforcing = int(config['SituationDecisionParams']['reinforcing'])
 
-        if 'EXTRA_ON_TENTACLE' in config['SituationDecisionParams']:
-            string_list = config['SituationDecisionParams']['EXTRA_ON_TENTACLE']
-            if string_list == "[]":
-                self.__extra_on_tentacle = []
-            else:
-                self.__extra_on_tentacle = [int(x) for x in list(string_list.strip("[").strip("]").split(","))]
-
-        if 'REINFORCE_ON_TENTACLE' in config['SituationDecisionParams']:
-            string_list = config['SituationDecisionParams']['REINFORCE_ON_TENTACLE']
-            if string_list == "[]":
-                self.__reinforce_on_tentacle = []
-            else:
-                self.__reinforce_on_tentacle = [int(x) for x in list(string_list.strip("[").strip("]").split(","))]
-
-        if 'ADJ_NODES' in config['SituationDecisionParams']:
-            string_list = config['SituationDecisionParams']['ADJ_NODES']
-            if string_list == "[]":
-                self.__adj_nodes = []
-            else:
-                self.__adj_nodes = [int(x) for x in list(string_list.strip("[").strip("]").split(","))]
-
-        if 'REAL_TARGET_DETECTION' in config['SituationDecisionParams']:
-            real_target_detection = config['SituationDecisionParams']['REAL_TARGET_DETECTION']
-            if real_target_detection == "TRUE":
-                self.__real_target_detection = True
-            else:
-                self.__real_target_detection = False
-        if 'REAL_TARGET_POSITION_X' in config['SituationDecisionParams']:
-            self.__real_target_position_x = int(config['SituationDecisionParams']['REAL_TARGET_POSITION_X'])
-
-        if 'REAL_TARGET_POSITION_Y' in config['SituationDecisionParams']:
-            self.__real_target_position_y = int(config['SituationDecisionParams']['REAL_TARGET_POSITION_Y'])
-
-        if 'REAL_TARGET_POSITION_Z' in config['SituationDecisionParams']:
-            self.__real_target_position_z = int(config['SituationDecisionParams']['REAL_TARGET_POSITION_Z'])
-
-        if 'ADJ_ORIGIN' in config['SituationDecisionParams']:
-            self.__adj_origin = int(config['SituationDecisionParams']['ADJ_ORIGIN'])
-
-        if 'ADJ_DEST' in config['SituationDecisionParams']:
-            self.__adj_dest = int(config['SituationDecisionParams']['ADJ_DEST'])
-
-        if 'ADJ_TIP' in config['SituationDecisionParams']:
-            self.__adj_tip = int(config['SituationDecisionParams']['ADJ_TIP'])
-
-        if 'ADJ_BACKBONE' in config['SituationDecisionParams']:
-            self.__adj_backbone = int(config['SituationDecisionParams']['ADJ_BACKBONE'])
-
-        if 'ADJ_FREE' in config['SituationDecisionParams']:
-            self.__adj_free = int(config['SituationDecisionParams']['ADJ_FREE'])
-
-        if 'ADJ_VIRTUAL_ORIGIN' in config['SituationDecisionParams']:
-            self.__adj_virtual_origin = int(config['SituationDecisionParams']['ADJ_VIRTUAL_ORIGIN'])
-
-        if 'VIRTUAL_ORIGIN_TRIGGER' in config['SituationDecisionParams']:
-            virtual_origin_trigger = config['SituationDecisionParams']['VIRTUAL_ORIGIN_TRIGGER']
-            if virtual_origin_trigger == "TRUE":
-                self.__virtual_origin_trigger = True
-            else:
-                self.__virtual_origin_trigger = False
-
-        if 'NEXT_ATTRACTOR' in config['SituationDecisionParams']:
-            self.__next_attractor = int(config['SituationDecisionParams']['NEXT_ATTRACTOR'])
-
-        if 'EQUILIBRIUM' in config['SituationDecisionParams']:
-            self.__equilibrium = int(config['SituationDecisionParams']['EQUILIBRIUM'])
+        if 'equilibrium' in config['SituationDecisionParams']:
+            self.__equilibrium = int(config['SituationDecisionParams']['equilibrium'])
 
     @property
     def tentacle_within_pos(self):

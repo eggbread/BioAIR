@@ -16,93 +16,58 @@ class SystemHyperParams(object):
         self.__average_sample = 5
         self.__pi = 3.141592
 
-        if option == 0:
-            self.__init(f'{os.path.dirname(__file__)}/init_file/{from_file}')
-        elif option == 1:
-            self.__load(f'../Params/load_file/{from_file}')
+        self.__init(config)
 
     def save(self, config=None):
         """
         Save the SystemHyperParams
         :param config: Parser.__config
         :return:
-        '''
-
-        try:
-            save_directory = f'../Params/load_file'
-            if not (os.path.isdir(save_directory)):
-                os.makedirs(os.path.join(save_directory))
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                print("Failed to create directory !")
-                raise
+        """
+        config['SystemHyperParams'] = {
+            'waittime': self.__wait_time,
+            'maxmsglength': self.__max_msg_length,
+            'repulsor': self.__repulsor,
+            'targetproximity': self.__target_proximity,
+            'targetforce': self.__target_force,
+            'unknown': self.__unknown,
+            'commstimeout': self.__comms_timeout,
+            'averagesample': self.__average_sample,
+            'pi': self.__pi,
+        }
 
     def __init(self, config=None):
         """
         Load the SystemHyperParams
         :param config: Parser.__config
         :return:
-        '''
-        config = configparser.ConfigParser()
-        config.read(load_file)
-        if 'WAITTIME' in config['SystemHyperParams']:
-            self.__waittime = float(config['SystemHyperParams']['WAITTIME'])
+        """
+        if 'waittime' in config['SystemHyperParams']:
+            self.__wait_time = float(config['SystemHyperParams']['waittime'])
 
-        if 'MAXMSGLENGTH' in config['SystemHyperParams']:
-            self.__maxmsglength = int(config['SystemHyperParams']['MAXMSGLENGTH'])
+        if 'maxmsglength' in config['SystemHyperParams']:
+            self.__max_msg_length = int(config['SystemHyperParams']['maxmsglength'])
 
-        if 'REPULSOR' in config['SystemHyperParams']:
-            self.__repulsor = int(config['SystemHyperParams']['REPULSOR'])
+        if 'repulsor' in config['SystemHyperParams']:
+            self.__repulsor = int(config['SystemHyperParams']['repulsor'])
 
-        if 'TARGETPROXIMITY' in config['SystemHyperParams']:
-            self.__targetproximity = int(config['SystemHyperParams']['TARGETPROXIMITY'])
+        if 'targetproximity' in config['SystemHyperParams']:
+            self.__target_proximity = int(config['SystemHyperParams']['targetproximity'])
 
-        if 'TARGETFORCE' in config['SystemHyperParams']:
-            self.__targetforce = int(config['SystemHyperParams']['TARGETFORCE'])
+        if 'targetforce' in config['SystemHyperParams']:
+            self.__target_force = int(config['SystemHyperParams']['targetforce'])
 
-        if 'UNKNOWN' in config['SystemHyperParams']:
-            self.__unknown = int(config['SystemHyperParams']['UNKNOWN'])
+        if 'unknown' in config['SystemHyperParams']:
+            self.__unknown = int(config['SystemHyperParams']['unknown'])
 
-        if 'COMMSTIMEOUT' in config['SystemHyperParams']:
-            self.__commstimeout = int(config['SystemHyperParams']['COMMSTIMEOUT'])
+        if 'commstimeout' in config['SystemHyperParams']:
+            self.__comms_timeout = int(config['SystemHyperParams']['commstimeout'])
 
-        if 'AVERAGESAMPLE' in config['SystemHyperParams']:
-            self.__averagesample = int(config['SystemHyperParams']['AVERAGESAMPLE'])
+        if 'averagesample' in config['SystemHyperParams']:
+            self.__average_sample = int(config['SystemHyperParams']['averagesample'])
 
-        if 'PI' in config['SystemHyperParams']:
-            self.__pi = float(config['SystemHyperParams']['PI'])
-
-    def __init(self, init_file=None):
-        config = configparser.ConfigParser()
-        config.read(init_file)
-        print(init_file)
-        print(config['SystemHyperParams'])
-        if 'WAITTIME' in config['SystemHyperParams']:
-            self.__waittime = float(config['SystemHyperParams']['WAITTIME'])
-
-        if 'MAXMSGLENGTH' in config['SystemHyperParams']:
-            self.__maxmsglength = int(config['SystemHyperParams']['MAXMSGLENGTH'])
-
-        if 'REPULSOR' in config['SystemHyperParams']:
-            self.__repulsor = int(config['SystemHyperParams']['REPULSOR'])
-
-        if 'TARGETPROXIMITY' in config['SystemHyperParams']:
-            self.__targetproximity = int(config['SystemHyperParams']['TARGETPROXIMITY'])
-
-        if 'TARGETFORCE' in config['SystemHyperParams']:
-            self.__targetforce = int(config['SystemHyperParams']['TARGETFORCE'])
-
-        if 'UNKNOWN' in config['SystemHyperParams']:
-            self.__unknown = int(config['SystemHyperParams']['UNKNOWN'])
-
-        if 'COMMSTIMEOUT' in config['SystemHyperParams']:
-            self.__commstimeout = int(config['SystemHyperParams']['COMMSTIMEOUT'])
-
-        if 'AVERAGESAMPLE' in config['SystemHyperParams']:
-            self.__averagesample = int(config['SystemHyperParams']['AVERAGESAMPLE'])
-
-        if 'PI' in config['SystemHyperParams']:
-            self.__pi = float(config['SystemHyperParams']['PI'])
+        if 'pi' in config['SystemHyperParams']:
+            self.__pi = float(config['SystemHyperParams']['pi'])
 
     @property
     def wait_time(self):
