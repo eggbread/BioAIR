@@ -9,12 +9,14 @@ from Modules.Sub.StateController import StateController
 from Modules.Sub.ProfileGenerator import ProfileGenerator
 from Modules.Sub.Message import Message
 from Drone.State import NodeState, TentacleState
+import threading
 
 class Communicator(object):
-    def __init__(self, hyper_params, situation_params, node_params,
-                 my_node_status, my_node_signal):
-        my_ip = node_params.ip
-        my_port = node_params.port
+    def __init__(self, bioair_params, node_status_queue, lock):
+        self.params = bioair_params
+        self.queue = node_status_queue
+        my_ip = self.params.get('CNP').ip
+        my_port = self.params.get('CNP').port
         self.__sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
         self.__sock.setblocking(0)
         self.__sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -273,8 +275,7 @@ class Communicator(object):
         self.__sock.sendto(message.get_json_format().encode(), connectionInfo8)
         self.__sock.sendto(message.get_json_format().encode(), connectionInfo9)
 
-    def communication(self,hyper_params,situation_params,node_params,
-                      my_node_status,my_node_signal,load_option):
+    def communication(self):
         '''
         the function operated by comm_thread
         On init,
@@ -297,25 +298,6 @@ class Communicator(object):
         '''
         load_time = time.time()
         while True:
-            if(load_option == 1 and time.time()-load_time <= 15):
-                self.__message_handling(hyper_params,
-                                        node_params,
-                                        situation_params,
-                                        my_node_status,
-                                        my_node_signal)
-                time.sleep(0.2)
-                #motion
-                self.__message_sender(hyper_params,
-                                      situation_params,
-                                      node_params,
-                                      my_node_status,
-                                      my_node_signal)
-            else:
-                # if (15 <= time.time() - load_time <= 20):
-                #     node_params.virtual_target = 3
-                #     node_params.virtual_target_position_x = 72
-                #     node_params.virtual_target_position_y = 778
-
                 self.__message_handling(hyper_params,
                                         node_params,
                                         situation_params,
@@ -331,9 +313,7 @@ class Communicator(object):
                                     node_params,
                                     my_node_status,
                                     my_node_signal)
-                # print(f"hold : {situation_params.hold}")
                 time.sleep(0.2)
-                #motion
                 self.__message_sender(hyper_params,
                                       situation_params,
                                       node_params,

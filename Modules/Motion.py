@@ -1,18 +1,23 @@
 import time
 import os
+import threading
 
 from Drone.State import NodeState, TentacleState
 from Params.ConfigurableNodeParams import ConfigurableNodeParams
 
 class Motion(object):
-    def __init__(self):
-        pass
+    def __init__(self, node_status_queue, lock):
+        self.queue = node_status_queue
+        self.lock = lock
 
-    def __update_location(self, hyper_params, situation_params, node_params):
+    def __update_location(self, bioair_params):
         '''
         Base on calculated profile,
         Get the next position
         '''
+        node_params = bioair_params.get('CNP')
+        situation_params = bioair_params.get('SDP')
+        hyper_params = bioair_params.get('SHP')
         expected_x, expected_y, wp_latitude, wp_longtitude = 0, 0, 0, 0
         wait_time = 0
 
@@ -88,11 +93,15 @@ class Motion(object):
         # start cmd
         os.popen(cmd)
 
-    def move_command(self,hyper_params, situation_params, node_params):
+    def move_command(self):
         '''
         this function is operated by motion_thread
         Command drone to move to next position
         '''
         while True:
-            self.__update_location(hyper_params, situation_params, node_params)
+            if not self.queue.empty():
+                self.lock.acquire()
+                bioair_params = self.queue.get()
+                self.lock.release()
+                self.__update_location(bioair_params)
             time.sleep(0.3)
