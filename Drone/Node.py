@@ -19,41 +19,41 @@ class Node(object):
 
         self.__parser = Parser(node_id, load_option)
 
-        self.bioair_params = {
+        self.__bioair_params = {
             'CNP': self.__parser.configurable_node_params,
             'SDP': self.__parser.situation_decision_params,
             'SHP': self.__parser.system_hyper_params
         }
 
-        self.__node_status_queue = Queue(maxsize=1)
-        lock = threading.Lock()
+        self.__sender_queue = Queue(maxsize=1)
+        self.__receiver_queue = Queue(maxsize=2)
+        sender_lock = threading.Lock()
+        receiver_lock = threading.Lock()
 
-        self.__communicator = Communicator(self.bioair_params, self.__node_status_queue, lock)
-        self.__motion = Motion(self.__node_status_queue, lock)
+        self.__communicator = \
+            Communicator(self.__bioair_params, self.__receiver_queue, self.__sender_queue, receiver_lock, sender_lock)
+        self.__motion = Motion(self.__receiver_queue, self.__sender_queue, receiver_lock, sender_lock)
 
-        self.__comm_thread = threading.Thread(target=self.__communicator.communication,
-                                              args=(),
-                                              daemon=True)
+        # self.__comm_thread = threading.Thread(target=self.__communicator.communication,
+        #                                       args=(),
+        #                                       daemon=True)
         self.__motion_thread = threading.Thread(target=self.__motion.move_command,
                                                 args=(),
                                                 daemon=True)
 
     def run(self):
         try:
-            self.__comm_thread.start()
+            self.__communicator.start()
             self.__motion_thread.start()
 
-            self.__comm_thread.join()
             self.__motion_thread.join()
-            pass
-        except:
-            pass
+        except OSError as err:
+            print("The Error is occured : ", err)
         finally:
             if self.__write:
                 node_id = self.__bioair_params.get('CNP').node_id
                 self.__parser.save()
-                cmd = f"coresendmsg -a 127.0.0.1 NODE NUMBER={node_id} X_POSITION=9999 Y_POSITION=9999"
-                os.popen(cmd)
+                os.popen(f"coresendmsg -a 127.0.0.1 NODE NUMBER={node_id} X_POSITION=9999 Y_POSITION=9999")
 
 
 if __name__ == '__main__':

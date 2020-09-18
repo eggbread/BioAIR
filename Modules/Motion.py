@@ -6,9 +6,11 @@ from Drone.State import NodeState, TentacleState
 from Params.ConfigurableNodeParams import ConfigurableNodeParams
 
 class Motion(object):
-    def __init__(self, node_status_queue, lock):
-        self.queue = node_status_queue
-        self.lock = lock
+    def __init__(self, receiver_queue, sender_queue, receiver_lock, sender_lock):
+        self.sender_queue = sender_queue
+        self.receiver_queue = receiver_queue
+        self.receiver_lock = receiver_lock
+        self.sender_lock = sender_lock
 
     def __update_location(self, bioair_params):
         '''
@@ -99,9 +101,9 @@ class Motion(object):
         Command drone to move to next position
         '''
         while True:
-            if not self.queue.empty():
-                self.lock.acquire()
-                bioair_params = self.queue.get()
-                self.lock.release()
+            if not self.receiver_queue.empty():
+                self.receiver_lock.acquire()
+                bioair_params = self.receiver_queue.get()
+                self.receiver_lock.release()
                 self.__update_location(bioair_params)
             time.sleep(0.3)
