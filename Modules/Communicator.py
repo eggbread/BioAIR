@@ -4,11 +4,11 @@ import random
 import math
 import os
 import errno
+import threading
 from socket import *
 from Modules.Sub.StateController import StateController
 from Modules.Sub.ProfileGenerator import ProfileGenerator
 from Modules.Sub.Message import Message
-import threading
 
 
 class Communicator(object):
@@ -25,7 +25,6 @@ class Communicator(object):
         self.receiver_lock = receiver_lock
 
         self.max_msg_length = bioair_params.get('SHP').max_msg_length
-        self.average_sample = bioair_params.get('SHP').average_sample
 
         self.node_status = {}
 
@@ -147,18 +146,13 @@ class Communicator(object):
         :return:
         """
         # CORE - Based on Distance
-        my_position_x = self.position_x
-        my_position_y = self.position_y
-        my_position_z = self.position_z
-        radio_range = self.radio_range
-
         rx_signal = math.sqrt(
-            (my_position_x - node_position_x) ** 2 + (my_position_y - node_position_y) ** 2 + (
-                    my_position_z - node_position_z) ** 2)
+            (self.position_x - node_position_x) ** 2 + (self.position_y - node_position_y) ** 2 + (
+                    self.position_z - node_position_z) ** 2)
 
-        if rx_signal < radio_range:
+        if rx_signal < self.radio_range:
             # rxSignal = 50 - (10 * math.log(rxSignal/4))
-            rx_signal = 1 - (rx_signal / radio_range)
+            rx_signal = 1 - (rx_signal / self.radio_range)
         else:
             rx_signal = -9999
 
