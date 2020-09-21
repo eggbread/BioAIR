@@ -4,7 +4,7 @@
 - Bioair algorithm simulator
 - SwarmSense module  
   
-  ![Bioair](README/new_bioair.gif)
+  ![Bioair](README/assets/new_bioair.gif)
   
 # How To Simulate
   
@@ -99,7 +99,7 @@ Class Documentations
   
 # Threads  
   
-![sq_diagram](README/sq_diagram.png)
+![sq_diagram](README/assets/sq_diagram.png)
 
 Message handling 
 
@@ -117,9 +117,9 @@ Message Send
 
 **And this will produce a flow chart:** 
  
-![flowchart_1](README/flowchart_1.png)
+![flowchart_1](README/assets/flowchart_1.png)
 
-![flowchart_2](README/flowchart_2.png)
+![flowchart_2](README/assets/flowchart_2.png)
 
   
 ## More about 
