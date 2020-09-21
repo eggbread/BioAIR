@@ -26,17 +26,14 @@ class Node(object):
         }
 
         self.__sender_queue = Queue(maxsize=1)
-        self.__receiver_queue = Queue(maxsize=2)
+        self.__receiver_queue = Queue()
         sender_lock = threading.Lock()
         receiver_lock = threading.Lock()
 
         self.__communicator = \
             Communicator(self.__bioair_params, self.__receiver_queue, self.__sender_queue, receiver_lock, sender_lock)
-        self.__motion = Motion(self.__receiver_queue, self.__sender_queue, receiver_lock, sender_lock)
 
-        # self.__comm_thread = threading.Thread(target=self.__communicator.communication,
-        #                                       args=(),
-        #                                       daemon=True)
+        self.__motion = Motion(self.__receiver_queue, self.__sender_queue, receiver_lock, sender_lock)
         self.__motion_thread = threading.Thread(target=self.__motion.move_command,
                                                 args=(),
                                                 daemon=True)
